@@ -18,6 +18,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+def redirect_to_home(request):
+    return redirect('home')
+
 urlpatterns = [
-    path('user/', include('user.urls')),
+    path('admin/', admin.site.urls),
+    path('user/', include('user.urls')),  # 유저 관련 URL들
+    path('', redirect_to_home),  # 기본 페이지 접근 시 home으로 이동
+     path('home/', include('user.urls')),
 ]
