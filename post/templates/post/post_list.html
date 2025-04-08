@@ -1,0 +1,18 @@
+<h1>📚 게시글 목록</h1>
+
+<!-- 작성하러 가기 버튼 -->
+<a href="{% url 'post_create' %}">
+    <button>✍️ 게시글 작성하러 가기</button>
+</a>
+
+<hr>
+
+{% if posts %}
+    {% for post in posts %}
+        <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
+        <p>작성자: {{ post.author.username }} | 작성일: {{ post.created_at }}</p>
+    {% endfor %}
+{% else %}
+    <p>게시글이 없습니다.</p>
+{% endif %}
+

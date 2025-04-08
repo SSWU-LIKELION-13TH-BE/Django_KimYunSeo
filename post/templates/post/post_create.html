@@ -1,0 +1,27 @@
+<h2>게시글 작성</h2>
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <label>제목:</label><br>
+  <input type="text" name="title"><br><br>
+
+  <label>내용:</label><br>
+  <textarea name="content" rows="5" cols="40"></textarea><br><br>
+
+  <label>이미지:</label><br>
+  <input type="file" name="image"><br><br>
+
+  <label>기술 스택:</label><br>
+  <select name="tech_stack">
+    <option value="">--선택--</option>
+    <option value="python">Python</option>
+    <option value="django">Django</option>
+    <option value="react">React</option>
+    <option value="kotlin">Kotlin</option>
+    <option value="flutter">Flutter</option>
+  </select><br><br>
+
+  <label>깃허브 링크:</label><br>
+  <input type="url" name="github_link"><br><br>
+
+  <button type="submit">작성</button>
+</form>

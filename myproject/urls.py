@@ -17,6 +17,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
+from django.conf import settings
+from django.conf.urls.static import static
 
 def redirect_to_home(request):
     return redirect('home')
@@ -25,5 +28,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('user.urls')),  # 유저 관련 URL들
     path('', redirect_to_home),  # 기본 페이지 접근 시 home으로 이동
-     path('home/', include('user.urls')),
+    path('home/', include('user.urls')),
+    path('post/', include('post.urls')),
 ]
+
+# 미디어 파일 개발 환경에서 보이게 하기
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

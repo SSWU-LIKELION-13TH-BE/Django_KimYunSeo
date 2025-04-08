@@ -1,0 +1,153 @@
+{% load static %}
+
+{% block content %}
+<h2>{{ post.title }}</h2>
+<p>{{ post.author.username }} | {{ post.created_at }}</p>
+<p>{{ post.content|linebreaks }}</p>
+
+{% if post.image %}
+  <div>
+    <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 100%; height: auto; margin-top: 10px;">
+  </div>
+{% endif %}
+
+{% if post.tech_stack %}
+  <p><strong>기술 스택:</strong> {{ post.get_tech_stack_display }}</p>
+{% endif %}
+
+{% if post.github_link %}
+  <p><strong>GitHub 링크:</strong> 
+    <a href="{{ post.github_link }}" target="_blank">{{ post.github_link }}</a>
+  </p>
+{% endif %}
+
+
+<!-- 게시글 좋아요 버튼 -->
+<button class="like-post-btn" data-post-id="{{ post.pk }}">
+  <span class="like-text">
+    {% if user in post.likes.all %}
+      💖 좋아요
+    {% else %}
+      🤍 좋아요
+    {% endif %}
+  </span>
+  (<span class="like-count">{{ post.likes.count }}</span>)
+</button>
+
+<hr>
+
+<h3>댓글</h3>
+{% for comment in comments %}
+  <div style="margin-left: 0;">
+    <strong>{{ comment.user.username }}</strong>: {{ comment.content }} ({{ comment.created_at }})
+
+    <!-- 댓글 좋아요 버튼 -->
+    <button class="like-comment-btn" data-comment-id="{{ comment.pk }}">
+      <span class="like-text">
+        {% if user in comment.likes.all %}
+          💖 좋아요
+        {% else %}
+          🤍 좋아요
+        {% endif %}
+      </span>
+      (<span class="like-count">{{ comment.likes.count }}</span>)
+    </button>
+
+    <form method="post" action="{% url 'add_comment' post.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="parent_id" value="{{ comment.id }}">
+      <input type="text" name="content" placeholder="답글 달기">
+      <button type="submit">작성</button>
+    </form>
+
+    {% for reply in comment.replies.all %}
+      <div style="margin-left: 20px;">
+        <strong>{{ reply.user.username }}</strong>: {{ reply.content }} ({{ reply.created_at }})
+
+        <!-- 대댓글 좋아요 버튼 -->
+        <button class="like-comment-btn" data-comment-id="{{ reply.pk }}">
+          <span class="like-text">
+            {% if user in reply.likes.all %}
+              💖 좋아요
+            {% else %}
+              🤍 좋아요
+            {% endif %}
+          </span>
+          (<span class="like-count">{{ reply.likes.count }}</span>)
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+
+
+
+<form method="post" action="{% url 'add_comment' post.pk %}">
+  {% csrf_token %}
+  <textarea name="content" placeholder="댓글 작성"></textarea>
+  <button type="submit">작성</button>
+</form>
+
+
+<!-- 좋아요 비동기 처리 JS -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // 게시글 좋아요
+    document.querySelectorAll('.like-post-btn').forEach(button => {
+      button.addEventListener('click', function (e) {
+        e.preventDefault();
+        const postId = this.dataset.postId;
+        fetch(`/post/${postId}/like/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          this.querySelector('.like-count').textContent = data.likes_count;
+          this.querySelector('.like-text').textContent = data.liked ? '💖 좋아요' : '🤍 좋아요';
+        });
+      });
+    });
+
+    // 댓글 & 대댓글 좋아요
+    document.querySelectorAll('.like-comment-btn').forEach(button => {
+      button.addEventListener('click', function (e) {
+        e.preventDefault();
+        const commentId = this.dataset.commentId;
+        fetch(`/post/comment/${commentId}/like/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          this.querySelector('.like-count').textContent = data.likes_count;
+          this.querySelector('.like-text').textContent = data.liked ? '💖 좋아요' : '🤍 좋아요';
+        });
+      });
+    });
+
+    // CSRF 토큰 가져오기
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+          cookie = cookie.trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  });
+</script>
+
+{% endblock %}
