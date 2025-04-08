@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    'user'
+    'user',
+    'post',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,5 @@ EMAIL_HOST_USER = 'dbstj231458@naver.com'  # 본인 네이버 이메일
 EMAIL_HOST_PASSWORD = 'your_password'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
