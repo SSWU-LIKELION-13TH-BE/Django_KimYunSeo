@@ -1,6 +1,19 @@
 <h1>📚 게시글 목록</h1>
 
-<!-- 작성하러 가기 버튼 -->
+<form method="get" action="{% url 'post_list' %}">
+    <input type="text" name="q" value="{{ q }}" placeholder="검색어를 입력하세요">
+    <input type="submit" value="검색">
+    {% if sort %}
+        <input type="hidden" name="sort" value="{{ sort }}">
+    {% endif %}
+</form>
+
+<div>
+    <strong>정렬:</strong>
+    <a href="?sort=&q={{ query|urlencode }}" {% if sort == "" or not sort %}style="font-weight:bold"{% endif %}>최신순</a> |
+    <a href="?sort=popular&q={{ query|urlencode }}" {% if sort == "popular" %}style="font-weight:bold"{% endif %}>인기순</a>
+</div>
+
 <a href="{% url 'post_create' %}">
     <button>✍️ 게시글 작성하러 가기</button>
 </a>
@@ -11,8 +24,8 @@
     {% for post in posts %}
         <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
         <p>작성자: {{ post.author.username }} | 작성일: {{ post.created_at }}</p>
+        <p>조회수: {{ post.view_count }}</p>
     {% endfor %}
 {% else %}
     <p>게시글이 없습니다.</p>
 {% endif %}
-
