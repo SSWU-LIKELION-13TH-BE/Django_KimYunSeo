@@ -7,7 +7,8 @@ class Post(models.Model):
     content = models.TextField()
     image = models.ImageField(upload_to='post_images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    view_count = models.PositiveIntegerField(default=0) 
+    
     TECH_STACK_CHOICES = [
         ('python', 'Python'),
         ('django', 'Django'),

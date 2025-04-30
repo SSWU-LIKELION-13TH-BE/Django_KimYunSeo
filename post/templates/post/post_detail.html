@@ -5,6 +5,9 @@
 <p>{{ post.author.username }} | {{ post.created_at }}</p>
 <p>{{ post.content|linebreaks }}</p>
 
+
+<p>{{ post.content|linebreaks }}</p>
+
 {% if post.image %}
   <div>
     <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 100%; height: auto; margin-top: 10px;">
