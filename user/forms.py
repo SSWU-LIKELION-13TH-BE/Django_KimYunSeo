@@ -15,3 +15,4 @@ class PasswordResetForm(forms.Form):
     username = forms.CharField(label="아이디", max_length=150)
     email = forms.EmailField(label="이메일", required=True)
     new_password = forms.CharField(label="새 비밀번호", widget=forms.PasswordInput)
+    
