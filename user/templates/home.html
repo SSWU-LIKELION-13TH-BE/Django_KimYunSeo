@@ -9,6 +9,11 @@
     
     {% if user.is_authenticated %}
         <p>환영합니다, {{ user.username }}님!</p>
+
+        <a href="{% url 'mypage' %}">
+            <button>마이페이지</button>
+        </a>
+        
         <a href="{% url 'logout' %}"><button>로그아웃</button></a>
 
         <br><br>

@@ -4,6 +4,10 @@ from django.contrib.auth.decorators import login_required
 from .models import Post, Comment
 from django.db.models import Q 
 from django.db.models import Count
+from django.contrib import messages
+from .models import Post
+from .forms import PostForm
+
 
 def post_create(request):
     if request.method == 'POST':
@@ -95,3 +99,31 @@ def toggle_comment_like(request, pk):
         comment.likes.add(request.user)
         liked = True
     return JsonResponse({'liked': liked, 'likes_count': comment.likes.count()})
+
+
+@login_required
+def post_edit(request, id):
+    post = get_object_or_404(Post, id=id)
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '게시물이 수정되었습니다.')
+            return redirect('post_list')  # 수정 후 게시물 목록으로 리디렉션
+    else:
+        form = PostForm(instance=post)
+
+    return render(request, 'post/post_edit.html', {'form': form, 'post': post})
+
+# 게시물 삭제
+@login_required
+def post_delete(request, id):
+    post = get_object_or_404(Post, id=id)
+
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, '게시물이 삭제되었습니다.')
+        return redirect('post_list')  # 삭제 후 게시물 목록으로 리디렉션
+
+    return render(request, 'post/post_confirm_delete.html', {'post': post})

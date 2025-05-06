@@ -1,0 +1,20 @@
+<!-- post/post_edit.html -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시물 수정</title>
+</head>
+<body>
+    <h1>{{ post.title }} 게시물 수정</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">수정</button>
+    </form>
+    <a href="{% url 'post_list' %}">게시물 목록으로 돌아가기</a>
+</body>
+</html>

@@ -1,10 +1,19 @@
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required 
 from .forms import SignUpForm, PasswordResetForm
 from django.contrib.auth.forms import PasswordChangeForm
+from post.models import Post 
+from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 User = get_user_model()  # 유저 모델 가져오기
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'email')
 
 def home_view(request):
     return render(request, 'home.html')
@@ -70,3 +79,43 @@ def password_reset_view(request):
             return redirect('password_reset')
 
     return render(request, 'password_reset.html')
+
+@login_required
+def mypage_view(request):
+    user = request.user
+    posts = Post.objects.filter(author=user)
+
+    if request.method == 'POST':
+        # 회원 정보 수정
+        if 'update_info' in request.POST:
+            new_username = request.POST.get('username')
+            nickname = request.POST.get('nickname')
+            email = request.POST.get('email')
+
+            if User.objects.exclude(pk=user.pk).filter(username=new_username).exists():
+                messages.error(request, '이미 존재하는 아이디입니다.')
+            else:
+                user.username = new_username
+                user.nickname = nickname
+                user.email = email
+                user.save()
+                messages.success(request, '회원 정보가 수정되었습니다.')
+                return redirect('mypage')
+
+        # 비밀번호 변경
+        elif 'change_password' in request.POST:
+            new_pw = request.POST.get('new_password')
+            confirm_pw = request.POST.get('confirm_password')
+
+            if new_pw != confirm_pw:
+                messages.error(request, '비밀번호가 일치하지 않습니다.')
+            elif len(new_pw) < 8:
+                messages.error(request, '비밀번호는 8자 이상이어야 합니다.')
+            else:
+                user.set_password(new_pw)
+                user.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, '비밀번호가 변경되었습니다.')
+                return redirect('mypage')
+
+    return render(request, 'mypage.html', {'user': user, 'posts': posts})
