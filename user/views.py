@@ -7,6 +7,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from post.models import Post 
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.views.decorators.csrf import csrf_protect
 
 User = get_user_model()  # 유저 모델 가져오기
 
@@ -31,6 +32,7 @@ def signup_view(request):
     return render(request, 'signup.html', {'form': form})
 
 # 로그인
+@csrf_protect 
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
