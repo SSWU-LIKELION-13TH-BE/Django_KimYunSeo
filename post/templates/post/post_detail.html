@@ -2,7 +2,11 @@
 
 {% block content %}
 <h2>{{ post.title }}</h2>
-<p>{{ post.author.username }} | {{ post.created_at }}</p>
+<p>
+  <a href="{% url 'profile_view' post.author.username %}">
+    {{ post.author.username }}
+  </a> | {{ post.created_at }}
+</p>
 <p>{{ post.content|linebreaks }}</p>
 
 

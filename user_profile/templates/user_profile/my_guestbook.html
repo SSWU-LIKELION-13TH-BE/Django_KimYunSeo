@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>내 방명록</title>
+</head>
+<body>
+  <h2>내 방명록</h2>
+
+  {% if guestbook_entries %}
+    {% for entry in guestbook_entries %}
+      <div style="border-bottom: 1px solid #ccc; padding: 10px 0;">
+        <strong>{{ entry.author.username }}</strong>: {{ entry.content }}<br>
+        <small>{{ entry.created_at }}</small>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>아직 아무도 방명록을 남기지 않았어요 😢</p>
+  {% endif %}
+</body>
+</html>

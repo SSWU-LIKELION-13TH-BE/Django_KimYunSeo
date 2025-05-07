@@ -30,6 +30,7 @@ urlpatterns = [
     path('', redirect_to_home),  # 기본 페이지 접근 시 home으로 이동
     path('home/', include('user.urls')),
     path('post/', include('post.urls')),
+    path('profile/', include('user_profile.urls')),
 ]
 
 # 미디어 파일 개발 환경에서 보이게 하기
