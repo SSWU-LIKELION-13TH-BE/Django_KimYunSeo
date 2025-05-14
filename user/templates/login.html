@@ -1,8 +1,10 @@
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
+    
 </head>
 <body>
     <h2>로그인</h2>
@@ -16,6 +18,16 @@
 
         <button type="submit">로그인</button>
     </form>
+
+    <hr>
+    <h3>소셜 로그인</h3>
+
+    <a href="{% provider_login_url 'kakao' %}">
+    <button>카카오로 로그인</button>
+    </a>
+    <a href="{% provider_login_url 'naver' %}">
+        <button>네이버로 로그인</button>
+    </a>
 
     {% if error %}
         <p style="color: red;">{{ error }}</p>

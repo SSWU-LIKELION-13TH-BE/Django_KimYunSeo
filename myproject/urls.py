@@ -31,6 +31,7 @@ urlpatterns = [
     path('home/', include('user.urls')),
     path('post/', include('post.urls')),
     path('profile/', include('user_profile.urls')),
+    path('accounts/',include('allauth.urls')),
 ]
 
 # 미디어 파일 개발 환경에서 보이게 하기
